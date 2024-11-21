@@ -15,8 +15,8 @@ def preprocess_files():
     
   }
   
-  ruta_absoluta_entrenos = "C:/Users/diego/OneDrive/Documentos/Master/Independiente del Valle/streamlit_app/data/entrenos/"
-  ruta_absoluta_partidos = "C:/Users/diego/OneDrive/Documentos/Master/Independiente del Valle/streamlit_app/data/partidos/"
+  ruta_absoluta_entrenos = "data/entrenos/"
+  ruta_absoluta_partidos = "data/partidos/"
 
   dfs, fechas = [], []
   for filename in os.listdir(ruta_absoluta_entrenos):  #Recorremos toda la carpeta con todos los ficheros
