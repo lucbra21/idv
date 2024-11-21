@@ -2,120 +2,125 @@ import pandas as pd
 import os
 
 
-def preprocess_files():
-  pos_dict = {
-    "Defensa Central": "DEF CEN",
-    "Defensa Lateral": "DEF LAT",
-    "Medio Centro": "MED",
-    "Interior": "MED INT",
-    "Delantero": "DEL",
-    "Extremo": "DEL EXT",
-    "Arquero": "POR", 
-    "Goal Keeper": "POR"
-    
-  }
-  
-  ruta_absoluta_entrenos = "data/entrenos/"
-  ruta_absoluta_partidos = "data/partidos/"
+import pandas as pd
+import os
+from typing import List, Dict, Tuple
 
-  dfs, fechas = [], []
-  for filename in os.listdir(ruta_absoluta_entrenos):  #Recorremos toda la carpeta con todos los ficheros
-    df = pd.read_csv(f"{ruta_absoluta_entrenos}{filename}", header=9) #Leemos el fichero en cuestion
-    df.drop_duplicates(subset=['Player Name'], keep='first', inplace=True) #Eliminamos los jugadores duplicaod
-    df = df[df["Position Name"] != "Goal Keeper"] #Nos quedamos con los jugadores de campo solo
-    df["Position Name"] = df["Position Name"].apply(lambda x: pos_dict[x]) #Cambiamos las posiciones
-    df["Nombre"] = df["Player Name"].apply(lambda x: x.split(" ")[0])   
+def preprocess_files() -> pd.DataFrame:
+    # Definir tipos de datos específicos para optimizar memoria
+    dtypes = {
+        'Player Name': 'category',
+        'Position Name': 'category',
+        'Nombre': 'category',
+        'Apellido': 'category',
+        'Sesion': 'category',
+        'Partido/Entreno': 'category'
+    }
     
-    apellidos = []
-    for idx, row in df.iterrows():
-      if ((row["Player Name"].split(" ")[1] == "IBARRA") | (row["Player Name"].split(" ")[1] == "MEDINA")):
-        apellido = row["Player Name"].split(" ")[0][:3] + "."+ row["Player Name"].split(" ")[1]
-        apellidos.append(apellido)
-      else:
-        apellidos.append(row["Player Name"].split(" ")[1])
-    df["Apellido"] = apellidos 
-    if filename == 'ctr-report-ent-109.csv':
-      df.Date = '20/06/2024'
-    elif filename == 'ctr-report-ent-114.csv':
-      df.Date = '25/06/2024'
-    elif filename == 'ctr-report-ent-117.csv':
-      df.Date = '27/06/2024'
-    elif filename == 'ctr-report-02-jul-0408-p-m.csv':
-      df.Date = '02/07/2024'
-    if df.Date[0] in fechas:
-      df["Sesion"] = "Tarde"
-    else:
-      df["Sesion"] = "Mañana"
-      fechas.append(df.Date[0])
-    df["Partido/Entreno"] = "Entreno"
-    dfs.append(df)
-    print(filename, df.Date[0], df.shape)
-    
-  for filename in os.listdir(ruta_absoluta_partidos):  #Recorremos toda la carpeta con todos los ficheros
-    # df_aux = pd.read_csv(f"./temporada24-25/{filename}", header=2) #Leemos el fichero en cuestion
-    # print(df_aux)
-    df = pd.read_csv(f"{ruta_absoluta_partidos}{filename}", header=9) #Leemos el fichero en cuestion
-    df.drop_duplicates(subset=['Player Name'], keep='first', inplace=True) #Eliminamos los jugadores duplicaod
-    df = df[df["Position Name"] != "Goal Keeper"] #Nos quedamos con los jugadores de campo solo
-    df["Position Name"] = df["Position Name"].apply(lambda x: pos_dict[x]) #Cambiamos las posiciones
-    df["Nombre"] = df["Player Name"].apply(lambda x: x.split(" ")[0])   
-    
-    apellidos = []
-    for idx, row in df.iterrows():
-      if ((row["Player Name"].split(" ")[1] == "IBARRA") | (row["Player Name"].split(" ")[1] == "MEDINA")):
-        apellido = row["Player Name"].split(" ")[0][:3] + "."+ row["Player Name"].split(" ")[1]
-        apellidos.append(apellido)
-      else:
-        apellidos.append(row["Player Name"].split(" ")[1])
-    df["Apellido"] = apellidos
-    if filename == 'ctr-report-copa-ecu1-olmedo-vs-idv.csv':
-      df.Date = '31/07/2024'
-    elif filename == 'ctr-report-2f2barcelona-vs-idv.csv':
-      df.Date = '10/08/2024'
-    
-    if df.Date[0] in fechas:
-      df["Sesion"] = "Tarde"
-    else:
-      df["Sesion"] = "Mañana"
-      fechas.append(df.Date[0])
-    df["Partido/Entreno"] = "Partido"
+    pos_dict = {
+        "Defensa Central": "DEF CEN",
+        "Defensa Lateral": "DEF LAT",
+        "Medio Centro": "MED",
+        "Interior": "MED INT",
+        "Delantero": "DEL",
+        "Extremo": "DEL EXT",
+        "Arquero": "POR", 
+        "Goal Keeper": "POR"
+    }
 
-    dfs.append(df)
-    print(filename, df.Date[0], df.shape)
-  result = pd.concat(dfs, ignore_index=True)
-  result['Date'] = pd.to_datetime(result['Date'], format='%d/%m/%Y')
-  
-  # Create separate columns for month, day, and year
-  result['Dia'] = result['Date'].dt.day
-  result['Mes'] = result['Date'].dt.month
-  result['Año'] = result['Date'].dt.year
-  
-  month_dict = {
-    1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril',
-    5: 'Mayo', 6: 'Junio', 7: 'Julio', 8: 'Agosto',
-    9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
-  }
+    # Mapeo de fechas para evitar condicionales repetitivos
+    date_mapping = {
+        'ctr-report-ent-109.csv': '20/06/2024',
+        'ctr-report-ent-114.csv': '25/06/2024',
+        'ctr-report-ent-117.csv': '27/06/2024',
+        'ctr-report-02-jul-0408-p-m.csv': '02/07/2024',
+        'ctr-report-copa-ecu1-olmedo-vs-idv.csv': '31/07/2024',
+        'ctr-report-2f2barcelona-vs-idv.csv': '10/08/2024'
+    }
 
-  # Map the month number to the month name
-  result['Mes'] = result['Mes'].map(month_dict)
-  earliest_date = result['Date'].min()
+    def process_single_file(filepath: str, filename: str, is_partido: bool) -> Tuple[pd.DataFrame, str]:
+        # Leer solo las columnas necesarias
+        needed_cols = ['Player Name', 'Position Name', 'Date', 'Total Distance', 
+                      'Velocity Band 6 Total Distance', 'Velocity Band 7 Total Distance',
+                      'Velocity Band 8 Total Distance', 'Total Duration',
+                      'Velocity Band 5 Total Distance', 'Acceleration B2-3 Average Efforts (Session) (Gen 2)',
+                      'Acceleration B3 Efforts (Gen 2)']
+        
+        df = pd.read_csv(filepath, header=9, usecols=needed_cols, dtype=dtypes)
+        
+        # Procesar el DataFrame
+        df = df[df["Position Name"] != "Goal Keeper"].copy()
+        df.drop_duplicates(subset=['Player Name'], keep='first', inplace=True)
+        
+        # Crear todas las columnas nuevas de una vez
+        new_cols = {
+            'Position Name': df['Position Name'].map(pos_dict),
+            'Nombre': df['Player Name'].str.split().str[0],
+            'Apellido': df.apply(lambda x: f"{x['Player Name'].split()[0][:3]}.{x['Player Name'].split()[1]}" 
+                               if x['Player Name'].split()[1] in ['IBARRA', 'MEDINA'] 
+                               else x['Player Name'].split()[1], axis=1),
+            'Partido/Entreno': 'Partido' if is_partido else 'Entreno'
+        }
+        
+        # Asignar fecha del mapeo si existe
+        if filename in date_mapping:
+            df['Date'] = date_mapping[filename]
+            
+        # Concatenar todas las columnas nuevas de una vez
+        df = pd.concat([df, pd.DataFrame(new_cols)], axis=1)
+        
+        return df, df.Date.iloc[0]
 
-  # Calculate the number of weeks between each date and the earliest date
-  result['Semana'] = ((result['Date'] - earliest_date).dt.days // 7) + 1
-  result = result.rename(columns={'Position Name': 'Posicion'})
-  
-  result.rename(columns = {"Partido/Entreno": "PartidoEntreno"}, inplace=True)
-  result['HSR %'] = (result["Velocity Band 6 Total Distance"] / result['Total Distance'].sum()) * 100
-  result["VHSR"] = result["Velocity Band 7 Total Distance"] + result["Velocity Band 8 Total Distance"] 
-  result['VHSR %'] = (result["VHSR"] / result['Total Distance'].sum()) * 100
-  result["AccMayoresGen2"] = result["Acceleration B2-3 Average Efforts (Session) (Gen 2)"] + result["Acceleration B3 Efforts (Gen 2)"]
-  result['TotalMinutes'] = result['Total Duration'].apply(lambda x: int(x.split(':')[0]) * 60 + int(x.split(':')[1]) + int(x.split(':')[2]) / 60)
-  result["Relative Distance"] = result["Total Distance"] / result["TotalMinutes"]
-  result['Band5 %'] = (result["Velocity Band 5 Total Distance"] / result['Total Distance']) * 100
-  result['Band6 %'] = (result["Velocity Band 6 Total Distance"] / result['Total Distance']) * 100
-  result['Band7 %'] = (result["Velocity Band 7 Total Distance"] / result['Total Distance']) * 100
-  result['Band8 %'] = (result["Velocity Band 8 Total Distance"] / result['Total Distance']) * 100
-  result.to_excel("../data.xlsx", index=False)
-  return result
+    # Procesar archivos
+    dfs = []
+    fechas = set()  # Usar set es más eficiente que lista para búsquedas
+    
+    # Procesar entrenos
+    for filename in os.listdir("data/entrenos/"):
+        df, fecha = process_single_file(f"data/entrenos/{filename}", filename, False)
+        df['Sesion'] = "Tarde" if fecha in fechas else "Mañana"
+        fechas.add(fecha)
+        dfs.append(df)
+        
+    # Procesar partidos
+    for filename in os.listdir("data/partidos/"):
+        df, fecha = process_single_file(f"data/partidos/{filename}", filename, True)
+        df['Sesion'] = "Tarde" if fecha in fechas else "Mañana"
+        fechas.add(fecha)
+        dfs.append(df)
+
+    # Concatenar y procesar resultado final
+    result = pd.concat(dfs, ignore_index=True)
+    result['Date'] = pd.to_datetime(result['Date'], format='%d/%m/%Y')
+    
+    # Crear todas las columnas de fecha de una vez
+    date_cols = pd.concat([
+        result['Date'].dt.day.rename('Dia'),
+        result['Date'].dt.month.rename('Mes'),
+        result['Date'].dt.year.rename('Año')
+    ], axis=1)
+    
+    result = pd.concat([result, date_cols], axis=1)
+    
+    # Calcular métricas en una sola operación
+    total_distance = result['Total Distance'].sum()
+    result['TotalMinutes'] = result['Total Duration'].str.split(':').apply(
+        lambda x: int(x[0]) * 60 + int(x[1]) + int(x[2]) / 60)
+    
+    metrics = {
+        'HSR %': (result["Velocity Band 6 Total Distance"] / total_distance) * 100,
+        'VHSR': result["Velocity Band 7 Total Distance"] + result["Velocity Band 8 Total Distance"],
+        'Relative Distance': result["Total Distance"] / result["TotalMinutes"],
+        'Band5 %': (result["Velocity Band 5 Total Distance"] / result["Total Distance"]) * 100,
+        'Band6 %': (result["Velocity Band 6 Total Distance"] / result["Total Distance"]) * 100,
+        'Band7 %': (result["Velocity Band 7 Total Distance"] / result["Total Distance"]) * 100,
+        'Band8 %': (result["Velocity Band 8 Total Distance"] / result["Total Distance"]) * 100
+    }
+    
+    result = pd.concat([result, pd.DataFrame(metrics)], axis=1)
+    
+    # Guardar y retornar
+    result.to_excel("../data.xlsx", index=False)
+    return result
 
 preprocess_files()
