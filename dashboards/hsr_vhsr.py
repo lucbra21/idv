@@ -19,65 +19,113 @@ def hsr_vhsr(df_selection):
     with left_col:
         col1, col2, col3,col4, col5, col6 = st.columns(6)
         with col1:
-            st.subheader("Total HSR")
-            st.subheader(f"{total_hsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Total HSR \n 
+            <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{total_hsr} m</text></h3>
+            """, unsafe_allow_html=True)
         with col2:
-            st.subheader("Avg HSR")
-            st.subheader(f"{avg_hsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Avg HSR \n 
+            <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{avg_hsr} m</text></h3>
+            """, unsafe_allow_html=True)
         with col3:
-            st.subheader("HSR %")
-            st.subheader(f"{hsr_pct}")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">HSR % \n 
+            <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{hsr_pct} %</text></h3>
+            """, unsafe_allow_html=True)
         with col4:
-            st.subheader("Total VHSR")
-            st.subheader(f"{total_vhsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 22px; text-align: center; color: #333;">Total VHSR \n 
+            <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{total_vhsr} m</text></h3>
+            """, unsafe_allow_html=True)
         with col5:
-            st.subheader("Avg VHSR")
-            st.subheader(f"{avg_vhsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 22px; text-align: center; color: #333;">Avg VHSR \n 
+            <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{avg_vhsr} m</text></h3>
+            """, unsafe_allow_html=True)
         with col6:
-            st.subheader("VHSR %")
-            st.subheader(f"{vhsr_pct}")
+            st.markdown(f"""
+            <h3 style="font-size: 22px; text-align: center; color: #333;">VHSR % \n 
+            <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{vhsr_pct} %</text></h3>
+            """, unsafe_allow_html=True)
     
-    fig_acc = (
+    fig_hsr_vhsr = (
         df_selection.groupby("Dia")[["Dist +17 km/h","Dist +25 km/h"]].agg("sum")
     )
     
-    fig_acc = fig_acc.rename(columns={
+    fig_hsr_vhsr = fig_hsr_vhsr.rename(columns={
         "Dist +17 km/h": "HSR",
         "Dist +25 km/h": "VHSR",
     })
 
-    fig_acc_reset = fig_acc.reset_index()
+    fig_hsr_vhsr_reset = fig_hsr_vhsr.reset_index()
 
-    fig_acc = px.bar(
-        fig_acc_reset,
+    fig_hsr_vhsr = px.bar(
+        fig_hsr_vhsr_reset,
         x="Dia",  # Eje X basado en el día
         y=["HSR","VHSR"],  # Múltiples bandas de velocidad en Y
-        title="HSE & VHSR",
+        title="HSR & VHSR",
+        labels={"value": "Distance", "variable": "HSR & VHSR"},
         template="plotly_white",
-        barmode="group"  # Aquí agrupamos las barras en lugar de apilarlas
+        barmode="group",  # Aquí agrupamos las barras en lugar de apilarlas
+        text_auto=".0f"
+    )
+    
+    fig_hsr_vhsr.update_layout(
+        title={
+            'text': "HSR & VHSR",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    fig_hsr_vhsr.update_traces(
+        textfont=dict(
+            color="black",  # Color del texto
+            size=18  # (Opcional) Tamaño del texto
+        )
     )
 
-    left_col.plotly_chart(fig_acc, use_container_width=True)
+    left_col.plotly_chart(fig_hsr_vhsr, use_container_width=True)
     
-    fig_dec_by_player = (
+    fig_hsr_vhsr_by_player = (
         df_selection.groupby("Apellido")[["Dist +17 km/h","Dist +25 km/h"]].agg("sum")
     )
     
-    fig_dec_by_player = fig_dec_by_player.rename(columns={
+    fig_hsr_vhsr_by_player = fig_hsr_vhsr_by_player.rename(columns={
         "Dist +17 km/h": "HSR",
         "Dist +25 km/h": "VHSR",
     })
 
-    fig_dec_by_player_reset = fig_dec_by_player.reset_index()
+    fig_hsr_vhsr_by_player_reset = fig_hsr_vhsr_by_player.reset_index()
 
-    fig_dec_by_player = px.bar(
-        fig_dec_by_player_reset,
+    fig_hsr_vhsr_by_player = px.bar(
+        fig_hsr_vhsr_by_player_reset,
         x=["HSR","VHSR"],  # Eje X basado en el día
         y="Apellido",  # Múltiples bandas de velocidad en Y
-        title="HSE & VHSR)",
+        title="HSE & VHSR",
+        labels={"value": "Num Efforts", "variable": "Acc & Dec"},
         template="plotly_white",
-        barmode="group"  # Aquí agrupamos las barras en lugar de apilarlas
+        barmode="group",  # Aquí agrupamos las barras en lugar de apilarlas
+        text_auto=".0f"
+    )
+    fig_hsr_vhsr_by_player.update_traces(
+        textfont=dict(
+            color="black",  # Color del texto
+            size=18  # (Opcional) Tamaño del texto
+        )
     )
     
-    fig_dec_by_player.update_layout(height=650)
-    right_col.plotly_chart(fig_dec_by_player, use_container_width=True)
+    fig_hsr_vhsr_by_player.update_layout(
+        height=650,
+        yaxis_title=None,
+        title={
+            'text': "HSR % VHSR by Player",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+    )
+    
+    right_col.plotly_chart(fig_hsr_vhsr_by_player, use_container_width=True)

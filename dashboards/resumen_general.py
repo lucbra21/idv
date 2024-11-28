@@ -3,10 +3,10 @@ import streamlit as st
 
 def resumen_general(df_selection):
       # Aquí muestra los gráficos o estadísticas que se relacionen con el resumen general
-    st.write("Dashboard: Resumen General")
+    st.header("Resumen General")
     
     total_distance = int(df_selection["Total Distance"].sum())
-    average_distance = round(df_selection["Total Distance"].mean(), 1)
+    average_distance = int(df_selection["Total Distance"].mean())
     total_hir = int(df_selection["Dist +17 km/h"].sum())
     average_hir = round(df_selection["Dist +17 km/h"].mean(), 1)
     total_hsr = int(df_selection["Velocity Band 6 Total Distance"].sum())
@@ -20,32 +20,44 @@ def resumen_general(df_selection):
     with left_col:
         col1, col2 = st.columns(2)
         with col1:
-            st.subheader("Total Distance")
-            st.subheader(f"{total_distance} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Total Distance \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{total_distance} m</text></h3>
+            """, unsafe_allow_html=True)
         with col2:
-            st.subheader("Avg Distance")
-            st.subheader(f"{average_distance} m")
-
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Average Distance \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{average_distance} m</text></h3>
+            """, unsafe_allow_html=True)
     with mid_col:
         col3, col4 = st.columns(2)
         with col3:
-            st.subheader("Total HIR")
-            st.subheader(f"{total_hir} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Total HIR \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{total_hir} m</text></h3>
+            """, unsafe_allow_html=True)
         with col4:
-            st.subheader("Avg HIR")
-            st.subheader(f"{average_hir} m")
-
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Avg HIR \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{average_hir} m</text></h3>
+            """, unsafe_allow_html=True)
     with right_col:
         col5, col6, col7 = st.columns(3)
         with col5:
-            st.subheader("Total HSR")
-            st.subheader(f"{total_hsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Total HSR \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{total_hsr} m</text></h3>
+            """, unsafe_allow_html=True)
         with col6:
-            st.subheader("Avg HSR")
-            st.subheader(f"{average_hsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Avg HSR \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{average_hsr} m</text></h3>
+            """, unsafe_allow_html=True)
         with col7:
-            st.subheader("% HSR")
-            st.subheader(f"{pct_hsr} %")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">% HSR \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{pct_hsr} m</text></h3>
+            """, unsafe_allow_html=True)
 
     # Plotting graphs within the main columns
     total_distance_by_player = (
@@ -59,7 +71,28 @@ def resumen_general(df_selection):
         orientation="v",
         template="plotly_white",
         color_discrete_sequence=["green"],
-        text_auto=True
+        text_auto='.0f'
+    )
+    fig_player_distance.update_traces(
+        textfont_size=18,
+    )
+    fig_player_distance.update_layout(
+        title={
+            'text': "Total Distance",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    
+    fig_player_distance.update_xaxes(
+        tickmode="linear",
+        dtick=1   # Interval of 1 between ticks
+    )
+    
+    fig_player_distance.update_yaxes(
+        showticklabels=False   # Ocultar etiquetas del eje X
     )
 
     total_hi_distance_by_player = (
@@ -72,7 +105,24 @@ def resumen_general(df_selection):
         title="HI Distance",
         orientation="v",
         template="plotly_white",
-        text_auto=True
+        text_auto='.0f'
+    )
+    fig_hi_distance.update_traces(
+        textfont_size=18,
+    )
+    fig_hi_distance.update_layout(
+        title={
+            'text': "HI Total Distance",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    
+    fig_hi_distance.update_xaxes(
+        tickmode="linear",
+        dtick=1   # Interval of 1 between ticks
     )
 
     total_hsr_distance_by_player = (
@@ -85,7 +135,24 @@ def resumen_general(df_selection):
         title="HSR Distance",
         orientation="v",
         template="plotly_white",
-        text_auto=True
+        text_auto=".0f"
+    )
+    fig_hsr_distance.update_traces(
+        textfont_size=18,
+    )
+    fig_hsr_distance.update_layout(
+        title={
+            'text': "HSR Total Distance",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    
+    fig_hsr_distance.update_xaxes(
+        tickmode="linear",
+        dtick=1   # Interval of 1 between ticks
     )
 
     # Plot the charts in the larger layout columns
@@ -101,17 +168,25 @@ def resumen_general(df_selection):
     with left_col:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.subheader("B5")
-            st.subheader(f"{b5_total_distance} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">B5 \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{b5_total_distance} m</text></h3>
+            """, unsafe_allow_html=True)
         with col2:
-            st.subheader("B6")
-            st.subheader(f"{b6_total_distance} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">B6 \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{b6_total_distance} m</text></h3>
+            """, unsafe_allow_html=True)
         with col3:
-            st.subheader("B7")
-            st.subheader(f"{b7_total_distance} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">B7 \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{b7_total_distance} m</text></h3>
+            """, unsafe_allow_html=True)
         with col4:
-            st.subheader("B8")
-            st.subheader(f"{b8_total_distance} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">B8 \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{b8_total_distance} m</text></h3>
+            """, unsafe_allow_html=True)
     
     fig_velocity_bands = (
         df_selection.groupby("Dia")[["Velocity Band 5 Total Distance", "Velocity Band 6 Total Distance",
@@ -132,9 +207,29 @@ def resumen_general(df_selection):
         x="Dia",
         y=["B5", "B6", "B7", "B8"],  # Nuevos nombres abreviados
         title="Total Distance by Velocity Bands",
-        labels={"value": "TD by Velocity Bands"},
+        labels={"value": "TD by Velocity Bands", "variable": "Velocity Bands"},
         template="plotly_white",
-        barmode="group"  # Agrupado, no apilado
+        barmode="group",
+        text_auto=".0f"
+    )
+    fig_velocity_bands_plot.update_traces(
+        textfont_size=12,
+        textangle=0 
+    )
+    
+    fig_velocity_bands_plot.update_layout(
+        title={
+            'text': "Total Distance by Velocity Bands",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    
+    fig_velocity_bands_plot.update_xaxes(
+        tickmode="linear",
+        dtick=1   # Interval of 1 between ticks
     )
 
     left_col.plotly_chart(fig_velocity_bands_plot, use_container_width=True)
@@ -147,17 +242,25 @@ def resumen_general(df_selection):
     with mid_col:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.subheader("Acc Total Efforts")
-            st.subheader(f"{acc_total_efforts} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Acc TE \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{acc_total_efforts}</text></h3>
+            """, unsafe_allow_html=True)
         with col2:
-            st.subheader("Acc Avg Efforts")
-            st.subheader(f"{acc_mean_efforts} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Acc AE \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{acc_mean_efforts}</text></h3>
+            """, unsafe_allow_html=True)
         with col3:
-            st.subheader("Dec Total Efforts")
-            st.subheader(f"{dec_total_efforts} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Dec TE \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{dec_total_efforts}</text></h3>
+            """, unsafe_allow_html=True)
         with col4:
-            st.subheader("Dec Avg Efforts")
-            st.subheader(f"{dec_mean_efforts} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Dec AE \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{dec_mean_efforts}</text></h3>
+            """, unsafe_allow_html=True)
 
     fig_acc_dec = (
         df_selection.groupby("Dia")[["Acceleration B2-3 Average Efforts (Session) (Gen 2)",
@@ -178,8 +281,31 @@ def resumen_general(df_selection):
         title="Acc & Dec (Nº Efforts)",
         labels={"value": "Num Efforts", "variable": "Acc & Dec"},
         template="plotly_white",
-        barmode="group"  # Aquí agrupamos las barras en lugar de apilarlas
+        barmode="group",  # Aquí agrupamos las barras en lugar de apilarlas
+        text_auto=".0f"
     )
+    
+    fig_acc_dec.update_traces(
+        textfont_color="white",
+        textfont_size=18,
+        textangle=0 
+    )
+    
+    fig_acc_dec.update_layout(
+        title={
+            'text': "Acc & Dec (Nº Efforts)",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    
+    fig_acc_dec.update_xaxes(
+        tickmode="linear",
+        dtick=1   # Interval of 1 between ticks
+    )
+
 
     mid_col.plotly_chart(fig_acc_dec, use_container_width=True)
 
@@ -190,14 +316,20 @@ def resumen_general(df_selection):
     with right_col:
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.subheader("Total VHSR")
-            st.subheader(f"{total_vhsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Total VHSR \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{total_vhsr}</text></h3>
+            """, unsafe_allow_html=True)
         with col2:
-            st.subheader("Avg VHSR")
-            st.subheader(f"{average_vhsr} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Avg VHSR \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{average_vhsr}</text></h3>
+            """, unsafe_allow_html=True)
         with col3:
-            st.subheader("% VHSR")
-            st.subheader(f"{pct_vhsr} %")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">% VHSR \n 
+            <text style="font-size: 26px; text-align: center; color: #333; font-weight: bold;">{pct_vhsr}</text></h3>
+            """, unsafe_allow_html=True)
     
     total_vhsr_distance_by_player = (
         df_selection.groupby("Dia")["VHSR"].agg("sum")
@@ -208,7 +340,27 @@ def resumen_general(df_selection):
         y="VHSR",
         title="VHSR Distance",
         orientation="v",
-        template="plotly_white"
+        template="plotly_white",
+        text_auto=".0f"
+    )
+    fig_vhsr_distance.update_traces(
+        textfont_size=18,
+        textangle=0 
+    )
+    
+    fig_vhsr_distance.update_layout(
+        title={
+            'text': "VHSR Total Distance",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    
+    fig_vhsr_distance.update_xaxes(
+        tickmode="linear",
+        dtick=1   # Interval of 1 between ticks
     )
 
     right_col.plotly_chart(fig_vhsr_distance, use_container_width=True)

@@ -2,7 +2,7 @@ import plotly.express as px
 import streamlit as st
 
 def acc_dec(df_selection):
-    st.write("ACC & DEC")
+    st.header("ACC & DEC")
 
     left_col, right_col = st.columns(2)
     
@@ -13,14 +13,20 @@ def acc_dec(df_selection):
     with left_col:
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.subheader("Acc Total Efforts")
-            st.subheader(f"{acc_total_efforts} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Acc Total Efforts \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{acc_total_efforts}</text></h3>
+            """, unsafe_allow_html=True)
         with col2:
-            st.subheader("Dec Total Efforts")
-            st.subheader(f"{dec_total_efforts} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Dec Total Efforts \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{dec_total_efforts}</text></h3>
+            """, unsafe_allow_html=True)
         with col3:
-            st.subheader("Acc + Dec Total Efforts")
-            st.subheader(f"{acc_dec} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Acc + Dec Total Efforts \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{acc_dec}</text></h3>
+            """, unsafe_allow_html=True)
     
     fig_acc_dec = (
         df_selection.groupby("Dia")[["Acceleration B2-3 Average Efforts (Session) (Gen 2)",
@@ -41,7 +47,23 @@ def acc_dec(df_selection):
         title="Acc & Dec (Nº Efforts)",
         labels={"value": "Num Efforts", "variable": "Acc & Dec"},
         template="plotly_white",
-        barmode="group"  # Aquí agrupamos las barras en lugar de apilarlas
+        barmode="group",  # Aquí agrupamos las barras en lugar de apilarlas
+        text_auto=True
+    )
+    fig_acc_dec.update_layout(
+        title={
+            'text': "Total Efforts",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    fig_acc_dec.update_traces(
+        textfont=dict(
+            color="white",  # Color del texto
+            size=18  # (Opcional) Tamaño del texto
+        )
     )
 
     left_col.plotly_chart(fig_acc_dec, use_container_width=True)
@@ -65,8 +87,24 @@ def acc_dec(df_selection):
         title="Acc & Dec (Nº Efforts)",
         labels={"value": "Num Efforts", "variable": "Acc & Dec"},
         template="plotly_white",
-        barmode="group"  # Aquí agrupamos las barras en lugar de apilarlas
+        barmode="group",  # Aquí agrupamos las barras en lugar de apilarlas
+        text_auto=True
+    )
+    fig_acc_dec_by_player.update_traces(
+        textfont=dict(
+            color="black",  # Color del texto
+            size=18  # (Opcional) Tamaño del texto
+        )
     )
     
-    fig_acc_dec_by_player.update_layout(height=650)
+    fig_acc_dec_by_player.update_layout(
+        height=650,
+        yaxis_title=None,
+        title={
+            'text': "Acc & Dec by Player Total Efforts",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+    )
     right_col.plotly_chart(fig_acc_dec_by_player, use_container_width=True)

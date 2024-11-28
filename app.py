@@ -232,3 +232,4 @@ else:
             player_load(df_selection)
         if dashboard_type == "Pefiles Maximos":
             perfilesMaximos(df_selection)  
+

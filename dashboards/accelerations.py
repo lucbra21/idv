@@ -3,7 +3,7 @@ import streamlit as st
 
 def accelerations(df_selection):
     
-    st.write("ACC")
+    st.header("Acelerations")
 
     left_col, right_col = st.columns(2)
     
@@ -14,14 +14,20 @@ def accelerations(df_selection):
     with left_col:
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.subheader("Acc (+2 m/s2)")
-            st.subheader(f"{acc_2ms} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Acc (+2 m/s2) \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{acc_2ms}</text></h3>
+            """, unsafe_allow_html=True)
         with col2:
-            st.subheader("Acc (2-4 m/s2)")
-            st.subheader(f"{acc_2_4} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Acc (2-4 m/s2) \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{acc_2_4}</text></h3>
+            """, unsafe_allow_html=True)
         with col3:
-            st.subheader("Acc (+4 m/s2)")
-            st.subheader(f"{acc_4} m")
+            st.markdown(f"""
+            <h3 style="font-size: 24px; text-align: center; color: #333;">Acc (+4 m/s2) \n 
+            <text style="font-size: 32px; text-align: center; color: #333; font-weight: bold;">{acc_4}</text></h3>
+            """, unsafe_allow_html=True)
     
     fig_acc = (
         df_selection.groupby("Dia")[["Acceleration B2-3 Average Efforts (Session) (Gen 2)",
@@ -42,7 +48,25 @@ def accelerations(df_selection):
         title="Acc (Nº Efforts)",
         labels={"value": "Num Efforts", "variable": "Acc & Dec"},
         template="plotly_white",
-        barmode="group"  # Aquí agrupamos las barras en lugar de apilarlas
+        barmode="group",  # Aquí agrupamos las barras en lugar de apilarlas
+        text_auto=True
+    )
+    
+    fig_acc.update_layout(
+        title={
+            'text': "Acc (Nº Efforts)",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
+        yaxis_title=None,
+    )
+    
+    fig_acc.update_traces(
+        textfont=dict(
+            color="white",  # Color del texto
+            size=18  # (Opcional) Tamaño del texto
+        )
     )
 
     left_col.plotly_chart(fig_acc, use_container_width=True)
@@ -66,7 +90,25 @@ def accelerations(df_selection):
         title="Acc & Dec (Nº Efforts)",
         labels={"value": "Num Efforts", "variable": "Acc & Dec"},
         template="plotly_white",
-        barmode="group"  # Aquí agrupamos las barras en lugar de apilarlas
+        barmode="group",  # Aquí agrupamos las barras en lugar de apilarlas
+        text_auto=True
+    )
+    fig_acc_by_player.update_traces(
+        textfont=dict(
+            color="black",  # Color del texto
+            size=18  # (Opcional) Tamaño del texto
+        )
+    )
+    
+    fig_acc_by_player.update_layout(
+        height=650,
+        yaxis_title=None,
+        title={
+            'text': "Acc Player (Nº Efforts)",        # Texto del título
+            'x': 0.5,                       # Centrar horizontalmente
+            'xanchor': 'center',            # Anclar al centro
+            'yanchor': 'top'                # Anclar en la parte superior
+        },
     )
     
     fig_acc_by_player.update_layout(height=650)
