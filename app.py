@@ -27,8 +27,19 @@ st.set_page_config(layout="wide")
 
 @st.cache_data
 
+
 def get_data():
-  df = pd.read_excel("data.xlsx")
+  columns_to_read = ["Date","Semana", "Mes", "Dia", "Acceleration B2-3 Average Efforts (Session) (Gen 2)", 
+                   "Posicion","Apellido", "Sesion", "Deceleration B2-3 Average Efforts (Session) (Gen 2)",
+                   "PartidoEntreno", "Aceleraciones 2 a 4", "Aceleraciones mayores a 4", "AccMayoresGen2",
+                   "Total Distance", "Velocity Band 5 Total Distance", "Velocity Band 5 Total Effort Count",
+                   "Band5 %", "Velocity Band 6 Total Distance", "Velocity Band 6 Total Effort Count",
+                   "Band6 %", "Velocity Band 7 Total Distance", "Velocity Band 7 Total Effort Count",
+                   "Band7 %", "Velocity Band 8 Total Distance", "Velocity Band 8 Total Effort Count",
+                   "Band8 %","Desaceleraciones 2 a 4", "Desaceleraciones mayores a 4", "Dist +17 km/h",
+                   "Dist +25 km/h", "Maximum Velocity", "Max Vel (% Max)", "Total Player Load",
+                   "Player Load Per Minute", "HSR %","VHSR %", "Relative Distance"]
+  df = pd.read_excel("data.xlsx", usecols=columns_to_read)
   return df
 
 # Lista de nombres de usuario y contraseñas
