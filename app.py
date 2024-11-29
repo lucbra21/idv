@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
+from datetime import datetime
 import plotly.express as px
 import hashlib
 import os
@@ -154,23 +155,38 @@ else:
         )
 
         st.sidebar.header("Please Filter Here: ")
+        
+        hoy = pd.Timestamp(datetime.now())
+        
+        df['Days_Difference'] = (df['Date'] - hoy).abs()
+
+        # Obtener la fila con la menor diferencia
+        fila_mas_cercana = df.loc[df['Days_Difference'].idxmin()]
+        
+        semana_cercana = fila_mas_cercana['Semana']
+        mes_cercano = fila_mas_cercana['Mes']
+        dia_cercano = fila_mas_cercana['Dia']
+
+
+        st.sidebar.header("Please Filter Here: ")
+
 
         semana=st.sidebar.multiselect(
             "Elige la semana",
             options=df.Semana.unique(),
-            default=sorted(df.Semana.unique())[-1]
+            default=semana_cercana
         )
 
         mes=st.sidebar.multiselect(
             "Elige el Mes",
             options=df.Mes.unique(),
-            default=df.Mes.unique()
+            default=mes_cercano
         )
 
         dia=st.sidebar.multiselect(
             "Elige el Dia",
             options=df.Dia.unique(),
-            default=df.Dia.unique()
+            default=dia_cercano
         )
 
         posicion=st.sidebar.multiselect(
