@@ -38,7 +38,8 @@ def get_data():
                    "Band7 %", "Velocity Band 8 Total Distance", "Velocity Band 8 Total Effort Count",
                    "Band8 %","Desaceleraciones 2 a 4", "Desaceleraciones mayores a 4", "Dist +17 km/h",
                    "Dist +25 km/h", "Maximum Velocity", "Max Vel (% Max)", "Total Player Load",
-                   "Player Load Per Minute", "HSR %","VHSR %", "Relative Distance"]
+                   "Player Load Per Minute", "HSR %","VHSR", "VHSR %", "Relative Distance", 
+                   "Meterage Per Minute", "Max Acceleration", "Max Deceleration"]
   df = pd.read_excel("data.xlsx", usecols=columns_to_read)
   return df
 
@@ -258,5 +259,6 @@ else:
         if dashboard_type == "Player Load":
             player_load(df_selection)
         if dashboard_type == "Pefiles Maximos":
-            perfilesMaximos(df_selection)  
+            df_selection_partidos = df_selection[df_selection.PartidoEntreno == "Partido"]
+            perfilesMaximos(df_selection_partidos)  
 
