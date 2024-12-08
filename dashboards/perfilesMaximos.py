@@ -22,30 +22,68 @@ def perfilesMaximos(df_selection):
     
     # Create 3 main columns: left_col, mid_col, right_col
     col1, col2, col3, col4 = st.columns(4)  # Set the relative widths as needed
+    
+    with col1:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Total Distance (m) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_total_distance} m</text></h3>
+      """, unsafe_allow_html=True)
+    with col2:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max B5 Distance (m) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_b5_total_distance} m</text></h3>
+      """, unsafe_allow_html=True)
+    with col3:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max B6 Distance (m) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_b6_total_distance} m</text></h3>
+      """, unsafe_allow_html=True)
+    with col4:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max B7 Distance (m) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_b7_total_distance} m</text></h3>
+      """, unsafe_allow_html=True)  
 
-    col1.subheader("Max Total Distance (m)")
-    col1.subheader(f"{max_total_distance} m")
-    col2.subheader("Max B5 Distance (m)")
-    col2.subheader(f"{max_b5_total_distance} m")
-    col3.subheader("Max B6 Distance (m)")
-    col3.subheader(f"{max_b6_total_distance} m")
-    col4.subheader("Max B7 Distance (m)")
-    col4.subheader(f"{max_b7_total_distance} m")
-    
-    col1.subheader("Max Acc 2-4 (Nº Esf)")
-    col1.subheader(f"{max_acc_2_4}")
-    col2.subheader("Max Acc >4 (Nº Esf)")
-    col2.subheader(f"{max_acc_4}")
-    col3.subheader("Max Dec 2-4 (Nº Esf)")
-    col3.subheader(f"{max_dec_2_4}")
-    col4.subheader("Max Dec >4 (Nº Esf)")
-    col4.subheader(f"{max_dec_4}")
-    
-    col1.subheader("Max Meters/Min")
-    col1.subheader(f"{max_mt_min}")
-    col2.subheader("Max Vel Max (km/h)")
-    col2.subheader(f"{max_velocity}")
-    col3.subheader("Max Acc (m/s2)")
-    col3.subheader(f"{max_acc}")
-    col4.subheader("Max Dec (m/s2)")
-    col4.subheader(f"{max_dec}")
+    with col1:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Acc 2-4 (Nº Esf) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_acc_2_4}</text></h3>
+      """, unsafe_allow_html=True)
+    with col2:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Acc >4 (Nº Esf) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_acc_4}</text></h3>
+      """, unsafe_allow_html=True)
+    with col3:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Dec 2-4 (Nº Esf) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_dec_2_4}</text></h3>
+      """, unsafe_allow_html=True)
+    with col4:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Dec >4 (Nº Esf) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_dec_4}</text></h3>
+      """, unsafe_allow_html=True)  
+
+
+    with col1:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Meters/Min \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_mt_min}</text></h3>
+      """, unsafe_allow_html=True)
+    with col2:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Vel Max (km/h) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_velocity}</text></h3>
+      """, unsafe_allow_html=True)
+    with col3:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Acc (m/s2) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_acc}</text></h3>
+      """, unsafe_allow_html=True)
+    with col4:
+      st.markdown(f"""
+      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Dec (m/s2) \n 
+      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_dec}</text></h3>
+      """, unsafe_allow_html=True)  
+  
