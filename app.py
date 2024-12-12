@@ -21,6 +21,7 @@ from dashboards.hsr_vhsr import hsr_vhsr
 from dashboards.max_velocity import max_velocity
 from dashboards.player_load import player_load
 from dashboards.perfilesMaximos import perfilesMaximos
+from dashboards.rtpDiario import rtpDiario
 
 
 st.set_page_config(layout="wide")
@@ -39,8 +40,51 @@ def get_data():
                    "Band8 %","Desaceleraciones 2 a 4", "Desaceleraciones mayores a 4", "Dist +17 km/h",
                    "Dist +25 km/h", "Maximum Velocity", "Max Vel (% Max)", "Total Player Load",
                    "Player Load Per Minute", "HSR %","VHSR", "VHSR %", "Relative Distance", 
-                   "Meterage Per Minute", "Max Acceleration", "Max Deceleration"]
+                   "Meterage Per Minute", "Max Acceleration", "Max Deceleration", "Acceleration B3 Efforts (Gen 2)",
+                   "Acceleration B2-3 Total Efforts (Gen 2)", "Deceleration B2-3 Total Efforts (Gen 2)",
+                   "Deceleration B3 Efforts (Gen 2)"]
   df = pd.read_excel("data.xlsx", usecols=columns_to_read)
+  
+  df_partido = df[df['PartidoEntreno'] == 'Partido']
+
+    # Calcular la distancia máxima por jugador
+  df['Max Dist Partido'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Total Distance'].max()
+  )
+  df['Max Dist Partido B5'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Velocity Band 5 Total Distance'].max()
+  )
+  df['Max Dist Partido B6'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Velocity Band 6 Total Distance'].max()
+  )
+  df['Max Dist Partido B7'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Velocity Band 7 Total Distance'].max()
+  )
+  df['Max Maximum Velocity'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Maximum Velocity'].max()
+  )
+  df['Max Meterage per Minute'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Meterage Per Minute'].max()
+  )
+  df['Max Acc 2-4'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Acceleration B2-3 Total Efforts (Gen 2)'].max()
+  )
+  df['Max Acc Mayor 4'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Acceleration B3 Efforts (Gen 2)'].max()
+  )
+  df['Max Max Accelerations'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Max Acceleration'].max()
+  )
+  df['Max Dec 2-4'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Deceleration B2-3 Total Efforts (Gen 2)'].max()
+  )
+  df['Max Dec Mayor 4'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Deceleration B3 Efforts (Gen 2)'].max()
+  )
+  df['Max Max Decelerations'] = df['Apellido'].map(
+    df_partido.groupby('Apellido')['Max Deceleration'].max()
+  )
+
   return df
 
 # Lista de nombres de usuario y contraseñas
@@ -111,8 +155,10 @@ else:
                 # Save the file
                 with open(save_path, "wb") as f:
                     f.write(uploaded_file.getbuffer())
-                st.success(f"Archivo guardado en la carpeta '{session_type.lower()}'.")
+                st.success(f"Preprocesando entreno...")
                 preprocess_files()
+                st.success(f"{session_type.lower()} guardado y preprocesado.")
+
         
     elif menu_option == "Eliminar Archivo":
         st.subheader("Elimina un archivo")
@@ -162,7 +208,8 @@ else:
                 "HSR & VHSR", 
                 "Maximun Velocity", 
                 "Player Load",
-                "Pefiles Maximos"
+                "Pefiles Maximos",
+                "RTP Diario"
             ]
         )
 
@@ -260,6 +307,9 @@ else:
             player_load(df_selection)
         if dashboard_type == "Pefiles Maximos":
             df_selection_partidos = df_selection[df_selection.PartidoEntreno == "Partido"]
-            perfilesMaximos(df_selection_partidos) 
+            perfilesMaximos(df_selection_partidos)
+        if dashboard_type == "RTP Diario":
+            df_selection_partidos = df_selection[df_selection.PartidoEntreno == "Partido"]
+            rtpDiario(df_selection_partidos)  
          
 

@@ -44,46 +44,17 @@ def perfilesMaximos(df_selection):
       <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_b7_total_distance} m</text></h3>
       """, unsafe_allow_html=True)  
 
-    with col1:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Acc 2-4 (Nº Esf) \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_acc_2_4}</text></h3>
-      """, unsafe_allow_html=True)
-    with col2:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Acc >4 (Nº Esf) \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_acc_4}</text></h3>
-      """, unsafe_allow_html=True)
-    with col3:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Dec 2-4 (Nº Esf) \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_dec_2_4}</text></h3>
-      """, unsafe_allow_html=True)
-    with col4:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Dec >4 (Nº Esf) \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_dec_4}</text></h3>
-      """, unsafe_allow_html=True)  
+    fig = go.Figure(go.Indicator(
+    domain = {'x': [0, 1], 'y': [0, 1]},
+    value = 450,
+    mode = "gauge+number+delta",
+    title = {'text': "Speed"},
+    delta = {'reference': 380},
+    gauge = {'axis': {'range': [None, 500]},
+             'steps' : [
+                 {'range': [0, 250], 'color': "lightgray"},
+                 {'range': [250, 400], 'color': "gray"}],
+             'threshold' : {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
 
-
-    with col1:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Meters/Min \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_mt_min}</text></h3>
-      """, unsafe_allow_html=True)
-    with col2:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Vel Max (km/h) \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_velocity}</text></h3>
-      """, unsafe_allow_html=True)
-    with col3:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Acc (m/s2) \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_acc}</text></h3>
-      """, unsafe_allow_html=True)
-    with col4:
-      st.markdown(f"""
-      <h3 style="font-size: 24px; text-align: center; color: #333;">Max Dec (m/s2) \n 
-      <text style="font-size: 30px; text-align: center; color: #333; font-weight: bold;">{max_dec}</text></h3>
-      """, unsafe_allow_html=True)  
+    fig.show()  
   

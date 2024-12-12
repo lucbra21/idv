@@ -77,6 +77,7 @@ def preprocess_files() -> pd.DataFrame:
     
     # Procesar entrenos
     for filename in os.listdir("data/entrenos/"):
+        print(filename)
         df, fecha = process_single_file(f"data/entrenos/{filename}", filename, False)
         df['Sesion'] = "Tarde" if fecha in fechas else "Mañana"
         fechas.add(fecha)
@@ -84,6 +85,7 @@ def preprocess_files() -> pd.DataFrame:
         
     # Procesar partidos
     for filename in os.listdir("data/partidos/"):
+        print(filename)
         df, fecha = process_single_file(f"data/partidos/{filename}", filename, True)
         df['Sesion'] = "Tarde" if fecha in fechas else "Mañana"
         fechas.add(fecha)
@@ -106,7 +108,7 @@ def preprocess_files() -> pd.DataFrame:
     total_distance = result['Total Distance'].sum()
     result['TotalMinutes'] = result['Total Duration'].str.split(':').apply(
         lambda x: int(x[0]) * 60 + int(x[1]) + int(x[2]) / 60)
-    
+
     metrics = {
         'HSR %': (result["Velocity Band 6 Total Distance"] / total_distance) * 100,
         'VHSR': result["Velocity Band 7 Total Distance"] + result["Velocity Band 8 Total Distance"],
@@ -116,11 +118,11 @@ def preprocess_files() -> pd.DataFrame:
         'Band7 %': (result["Velocity Band 7 Total Distance"] / result["Total Distance"]) * 100,
         'Band8 %': (result["Velocity Band 8 Total Distance"] / result["Total Distance"]) * 100
     }
-    
+        
     result = pd.concat([result, pd.DataFrame(metrics)], axis=1)
-    
-    # Guardar y retornar
-    result.to_excel("../data.xlsx", index=False)
+    os.remove("../data.xlsx")
+    result.to_excel('../data.xlsx', index=False)
+        
     return result
 
 preprocess_files()
